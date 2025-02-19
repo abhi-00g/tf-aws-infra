@@ -1,9 +1,8 @@
-name: Terraform CI
+name: terraform CI
 
 on:
   pull_request:
-    branches:
-      - main 
+    branches: [main]
 
 jobs:
   terraform-checks:
