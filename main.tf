@@ -1,4 +1,3 @@
-# Create VPC
 resource "aws_vpc" "main_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -8,8 +7,6 @@ resource "aws_vpc" "main_vpc" {
     Name = "MainVPC"
   }
 }
-
-# Create Public Subnets
 resource "aws_subnet" "public_subnets" {
   count = length(var.public_subnet_cidrs)
 
@@ -22,8 +19,6 @@ resource "aws_subnet" "public_subnets" {
     Name = "PublicSubnet-${count.index + 1}"
   }
 }
-
-# Create Private Subnets
 resource "aws_subnet" "private_subnets" {
   count = length(var.private_subnet_cidrs)
 
@@ -36,8 +31,6 @@ resource "aws_subnet" "private_subnets" {
     Name = "PrivateSubnet-${count.index + 1}"
   }
 }
-
-# Create Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main_vpc.id
 
@@ -45,20 +38,28 @@ resource "aws_internet_gateway" "igw" {
     Name = "MainIGW"
   }
 }
-
-# Public Route Table
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main_vpc.id
+  tags = {
+    Name = "PublicRouteTable"
+  }
 }
-
-# Attach Public Subnets to Public Route Table
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.main_vpc.id
+  tags = {
+    Name = "PrivateRouteTable"
+  }
+}
 resource "aws_route_table_association" "public_association" {
   count          = length(var.public_subnet_cidrs)
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
-
-# Public Route for Internet Access
+resource "aws_route_table_association" "private_association" {
+  count          = length(var.private_subnet_cidrs)
+  subnet_id      = aws_subnet.private_subnets[count.index].id
+  route_table_id = aws_route_table.private_rt.id
+}
 resource "aws_route" "public_internet_route" {
   route_table_id         = aws_route_table.public_rt.id
   destination_cidr_block = "0.0.0.0/0"
