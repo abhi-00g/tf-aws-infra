@@ -50,3 +50,9 @@ variable "app_port" {
   type        = number
   default     = 3000
 }
+
+variable "db_password" {
+  description = "Password"
+  type        = string
+  default     = "password"
+}
