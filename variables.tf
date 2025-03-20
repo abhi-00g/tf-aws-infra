@@ -45,14 +45,42 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
-variable "app_port" {
-  description = "Port the web application runs on"
-  type        = number
-  default     = 3000
-}
+# variable "app_port" {
+#   description = "Port the web application runs on"
+#   type        = number
+#   default     = 3000
+# }
 
 variable "db_password" {
   description = "Password"
   type        = string
   default     = "password"
+}
+
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  default     = "user"
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "name"
+}
+
+variable "db_port" {
+  description = "Database port"
+  type        = number
+  default     = 5432
+}
+
+variable "aws_access_key" {
+  type    = string
+  default = "your-aws-access-key"
+}
+
+variable "aws_secret_key" {
+  type    = string
+  default = "your-aws-secret-key"
 }
