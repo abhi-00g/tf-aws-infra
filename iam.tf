@@ -25,13 +25,13 @@ resource "aws_iam_policy" "s3_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Action = [
           "s3:PutObject",
           "s3:GetObject",
           "s3:DeleteObject",
           "s3:ListBucket"
-        ]
+        ],
         Resource = [
           aws_s3_bucket.webapp_bucket.arn,
           "${aws_s3_bucket.webapp_bucket.arn}/*"
@@ -44,6 +44,17 @@ resource "aws_iam_policy" "s3_policy" {
 resource "aws_iam_role_policy_attachment" "ec2_s3_attach" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = aws_iam_policy.s3_policy.arn
+}
+
+# CloudWatch Agent policy attachment
+data "aws_iam_policy" "cloudwatch_policy" {
+  name = "CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_policy_attachment" "ec2_cloudwatch_attach" {
+  name       = "ec2_cloudwatch_attach"
+  roles      = [aws_iam_role.ec2_role.name]
+  policy_arn = data.aws_iam_policy.cloudwatch_policy.arn
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {

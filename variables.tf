@@ -75,12 +75,14 @@ variable "db_port" {
   default     = 5432
 }
 
-variable "aws_access_key" {
-  type    = string
-  default = "your-aws-access-key"
-}
+# variable "aws_secret_key" {
+#   description = "secret key"
+#   type        = string
+#   default     = "name"
+# }
 
-variable "aws_secret_key" {
-  type    = string
-  default = "your-aws-secret-key"
-}
+# variable "aws_access_key" {
+#   description = "access key"
+#   type        = string
+#   default     = "name"
+# }
