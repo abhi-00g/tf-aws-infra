@@ -75,14 +75,38 @@ variable "db_port" {
   default     = 5432
 }
 
-# variable "aws_secret_key" {
-#   description = "secret key"
-#   type        = string
-#   default     = "name"
-# }
+variable "domain_name" {
+  description = "The domain name (dev.yourdomain.com or demo.yourdomain.com)"
+  type        = string
+  default     = "id"
+}
 
-# variable "aws_access_key" {
-#   description = "access key"
-#   type        = string
-#   default     = "name"
-# }
+variable "asg_desired_capacity" {
+  description = "Desired number of instances"
+  type        = number
+}
+
+variable "asg_min_size" {
+  description = "Minimum number of instances"
+  type        = number
+}
+
+variable "asg_max_size" {
+  description = "Maximum number of instances"
+  type        = number
+}
+variable "asg_scale_up_threshold" {
+  description = "CPU % threshold for scaling up"
+  type        = number
+}
+
+variable "asg_scale_down_threshold" {
+  description = "CPU % threshold for scaling down"
+  type        = number
+}
+
+variable "asg_cooldown" {
+  description = "Cooldown time for scaling actions (seconds)"
+  type        = number
+}
+
