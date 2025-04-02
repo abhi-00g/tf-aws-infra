@@ -13,7 +13,7 @@ resource "aws_launch_template" "web_lt" {
     security_groups             = [aws_security_group.application_security_group.id]
   }
 
-  user_data = base64encode(templatefile("scripts/user_data.sh.tpl", {
+  user_data = base64encode(templatefile("${path.module}/scripts/user_data.sh", {
     db_name         = var.db_name,
     db_user         = var.db_user,
     db_password     = var.db_password,
