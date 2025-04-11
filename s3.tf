@@ -18,17 +18,6 @@ resource "aws_s3_bucket_public_access_block" "webapp_bucket_access" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "webapp_bucket_encryption" {
-  bucket = aws_s3_bucket.webapp_bucket.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
 resource "aws_s3_bucket_lifecycle_configuration" "webapp_bucket_lifecycle" {
   bucket = aws_s3_bucket.webapp_bucket.id
 
@@ -41,4 +30,15 @@ resource "aws_s3_bucket_lifecycle_configuration" "webapp_bucket_lifecycle" {
       storage_class = "STANDARD_IA"
     }
   }
+}
+resource "aws_s3_bucket_server_side_encryption_configuration" "webapp_bucket_encryption" {
+  bucket = aws_s3_bucket.webapp_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.s3_key.arn
+    }
+  }
+  depends_on = [aws_kms_key.s3_key]
 }

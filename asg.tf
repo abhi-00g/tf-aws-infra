@@ -1,8 +1,8 @@
 resource "aws_launch_template" "web_lt" {
-  name_prefix   = "webapp-launch-template-"
+  name          = "webapp-launch-template"
   image_id      = var.custom_ami
   instance_type = var.instance_type
-  //key_name      = var.aws_key_name # Optional SSH access
+  # key_name    = var.aws_key_name  # Optional, if SSH needed
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_profile.name
@@ -16,11 +16,12 @@ resource "aws_launch_template" "web_lt" {
   user_data = base64encode(templatefile("${path.module}/scripts/user_data.sh", {
     db_name         = var.db_name,
     db_user         = var.db_user,
-    db_password     = var.db_password,
     db_host         = aws_db_instance.postgres_instance.address,
     db_port         = var.db_port,
     aws_bucket_name = aws_s3_bucket.webapp_bucket.id,
-    aws_region      = var.aws_region
+    aws_region      = var.aws_region,
+    db_password     = random_password.db_password.result,
+    secret_id       = aws_secretsmanager_secret.db_password_secret.name
   }))
 
   tag_specifications {
@@ -54,7 +55,6 @@ resource "aws_autoscaling_group" "web_asg" {
   }
 }
 
-# Auto Scaling Policy - Scale Up
 resource "aws_autoscaling_policy" "scale_up_policy" {
   name                   = "scale-up-policy"
   scaling_adjustment     = 1
@@ -80,7 +80,6 @@ resource "aws_cloudwatch_metric_alarm" "scale_up_alarm" {
   alarm_actions = [aws_autoscaling_policy.scale_up_policy.arn]
 }
 
-# Auto Scaling Policy - Scale Down
 resource "aws_autoscaling_policy" "scale_down_policy" {
   name                   = "scale-down-policy"
   scaling_adjustment     = -1
