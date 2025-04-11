@@ -30,6 +30,9 @@ resource "aws_db_instance" "postgres_instance" {
   skip_final_snapshot = true
   deletion_protection = false
 
+  storage_encrypted = true
+  kms_key_id        = aws_kms_key.rds_key.arn
+
   tags = {
     Name = "PostgreSQL-RDS"
   }

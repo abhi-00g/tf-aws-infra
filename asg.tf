@@ -24,6 +24,17 @@ resource "aws_launch_template" "web_lt" {
     secret_id       = aws_secretsmanager_secret.db_password_secret.name
   }))
 
+  block_device_mappings {
+    device_name = "/dev/sda1" # Standard and safest
+    ebs {
+      volume_size           = 25
+      volume_type           = "gp2"
+      encrypted             = true
+      kms_key_id            = aws_kms_key.ec2_key.arn
+      delete_on_termination = true
+    }
+  }
+
   tag_specifications {
     resource_type = "instance"
     tags = {
