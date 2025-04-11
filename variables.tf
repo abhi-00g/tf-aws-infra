@@ -110,3 +110,17 @@ variable "asg_cooldown" {
   type        = number
 }
 
+variable "account_id" {
+  description = "AWS Account ID"
+  type        = string
+}
+
+variable "user_name" {
+  description = "IAM username for admin and usage access"
+  type        = string
+}
+
+# variable "environment" {
+#   description = "Environment name (dev or demo)"
+#   type        = string
+# }

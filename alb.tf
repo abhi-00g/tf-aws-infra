@@ -47,3 +47,22 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.web_tg.arn
   }
 }
+
+# HTTPS Listener for Secure Traffic
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.web_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = aws_acm_certificate_validation.webapp_certificate_validation_complete.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web_tg.arn
+  }
+
+  depends_on = [
+    aws_acm_certificate_validation.webapp_certificate_validation_complete
+  ]
+}

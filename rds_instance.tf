@@ -18,7 +18,7 @@ resource "aws_db_instance" "postgres_instance" {
 
   db_name              = "csye6225"
   username             = "csye6225"
-  password             = var.db_password
+  password             = random_password.db_password.result
   parameter_group_name = aws_db_parameter_group.postgresql_parameter_group.name
 
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name

@@ -34,8 +34,19 @@ resource "aws_iam_policy" "s3_policy" {
         ],
         Resource = [
           aws_s3_bucket.webapp_bucket.arn,
-          "${aws_s3_bucket.webapp_bucket.arn}/*"
+          "${aws_s3_bucket.webapp_bucket.arn}/*",
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ],
+        Resource = aws_kms_key.s3_key.arn
       }
     ]
   })
@@ -60,4 +71,37 @@ resource "aws_iam_policy_attachment" "ec2_cloudwatch_attach" {
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_profile"
   role = aws_iam_role.ec2_role.name
+}
+
+# Allow EC2 to read Secrets Manager secret
+resource "aws_iam_policy" "secretsmanager_read_policy" {
+  name        = "ec2_read_secretsmanager_policy"
+  description = "Allow EC2 to read database password from Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = aws_secretsmanager_secret.db_password_secret.arn
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Decrypt"
+        ],
+        Resource = aws_kms_key.secret_key.arn
+      }
+    ]
+  })
+}
+
+# Attach policy to EC2 role
+resource "aws_iam_role_policy_attachment" "ec2_attach_secretsmanager_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.secretsmanager_read_policy.arn
 }
