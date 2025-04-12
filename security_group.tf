@@ -3,12 +3,12 @@ resource "aws_security_group" "application_security_group" {
   vpc_id = aws_vpc.main_vpc.id
 
   # Ingress rules for allowing incoming traffic
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH access from anywhere
-  }
+  # ingress {
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"] # Allow SSH access from anywhere
+  # }
 
   # Allow application port access
   ingress {
