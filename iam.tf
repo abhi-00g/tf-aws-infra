@@ -105,3 +105,32 @@ resource "aws_iam_role_policy_attachment" "ec2_attach_secretsmanager_policy" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = aws_iam_policy.secretsmanager_read_policy.arn
 }
+
+resource "aws_iam_policy" "ebs_kms_policy" {
+  name        = "ec2_ebs_kms_policy"
+  description = "Allow EC2 instances to use the KMS key for EBS volume encryption"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:GenerateDataKeyWithoutPlaintext",
+          "kms:DescribeKey",
+          "kms:CreateGrant"
+        ],
+        Resource = aws_kms_key.ec2_key.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_attach_ebs_kms_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.ebs_kms_policy.arn
+}
