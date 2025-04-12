@@ -36,11 +36,13 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-# HTTP Listener
-resource "aws_lb_listener" "http" {
+# HTTPS Listener
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.web_alb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+
+  certificate_arn = var.aws_profile == "dev" ? aws_acm_certificate_validation.dev_cert_validation[0].certificate_arn : var.certificate_arn
 
   default_action {
     type             = "forward"

@@ -124,3 +124,8 @@ variable "user_name" {
 #   description = "Environment name (dev or demo)"
 #   type        = string
 # }
+
+variable "certificate_arn" {
+  type    = string
+  default = "arn:aws:acm:us-east-1:888577020394:certificate/ebf5b331-bdb4-4ecc-a959-bb83d8dfc182"
+}

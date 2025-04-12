@@ -9,3 +9,11 @@ We are going to start setting up networking in AWS, such as Virtual Private Clou
 5. Use terraform plan -var="aws_profile=demo/dev" to show waht is goining to be created 
 6. Use terraform apply -var="aws_profile=demo/dev" --auto-approve to apply the infrastructure
 7. Use terraform destroy -var="aws_profile=demo/dev" --auto-approve to destroy all resources created by terraform
+
+The command to import the certificate is
+aws acm import-certificate \
+  --certificate fileb://demo_abhishekgade_me/demo_abhishekgade_me.crt \
+  --private-key fileb://demo_abhishekgade_me/demoenv.key \
+  --certificate-chain fileb://demo_abhishekgade_me/demo_abhishekgade_me.ca-bundle \
+  --region us-east-1 \
+  --profile demo
